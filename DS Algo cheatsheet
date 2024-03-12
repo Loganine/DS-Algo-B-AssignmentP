@@ -20,3 +20,64 @@
 快排：选取一个基准，比基准大的放右边，小的放左边，递归处理，平均复杂度o(nlogn),最坏复杂度o(n^2);
 归并排序:申请额外空间，双指针移动，小的先放，大的后放，分治策略，平均复杂度、最坏复杂度o(nlogn)
 可能用到的源代码：
+1.快排
+def quicksort(arr, left, right):
+    if left < right:
+        partition_pos = partition(arr, left, right)
+        quicksort(arr, left, partition_pos - 1)
+        quicksort(arr, partition_pos + 1, right)
+
+
+def partition(arr, left, right):
+    i = left
+    j = right - 1
+    pivot = arr[right]#选定基准
+    while i <= j:
+        while i <= right and arr[i] < pivot:
+            i += 1
+        while j >= left and arr[j] >= pivot:
+            j -= 1
+        if i < j:
+            arr[i], arr[j] = arr[j], arr[i]
+    if arr[i] > pivot:
+        arr[i], arr[right] = arr[right], arr[i]
+    return i
+
+
+arr = [22, 11, 88, 66, 55, 77, 33, 44]#这里是举个例子
+quicksort(arr, 0, len(arr) - 1)
+print(arr)
+2.归并排序
+def mergeSort(arr):
+	if len(arr) > 1:
+		mid = len(arr)//2
+
+		L = arr[:mid]	# Dividing the array elements
+		R = arr[mid:] # Into 2 halves
+
+		mergeSort(L) # Sorting the first half
+		mergeSort(R) # Sorting the second half
+
+		i = j = k = 0
+		# Copy data to temp arrays L[] and R[]
+		while i < len(L) and j < len(R):
+			if L[i] <= R[j]:
+				arr[k] = L[i]
+				i += 1
+			else:
+				arr[k] = R[j]
+				j += 1
+			k += 1
+
+		# Checking if any element was left
+		while i < len(L):
+			arr[k] = L[i]
+			i += 1
+			k += 1
+
+		while j < len(R):
+			arr[k] = R[j]
+			j += 1
+			k += 1
+
+
