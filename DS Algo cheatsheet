@@ -47,6 +47,7 @@ def partition(arr, left, right):
 arr = [22, 11, 88, 66, 55, 77, 33, 44]#这里是举个例子
 quicksort(arr, 0, len(arr) - 1)
 print(arr)
+
 2.归并排序
 def mergeSort(arr):
 	if len(arr) > 1:
@@ -104,7 +105,19 @@ def merge(left,right):
     merged+=right[j:]
     return merged,ans #返回值为排好序的列表与逆序数
 
+3.只求逆序数（逆天版本）这里用到的是bisect库。
+from bisect import *
+n=int(input())
+ans=0
+lis=[int(i) for i in input().split()]
+new=[]
+for i in lis:
+    pos=bisect_left(new,i)
+    ans+=pos
+    insort_left(new,i)
+print(int(n*(n-1)/2-ans))
 
-            
+4.八皇后问题（可扩展为n皇后问题）            
 
-
+5.约瑟夫问题（存在变式）
+暂时不放代码了，睡觉！
