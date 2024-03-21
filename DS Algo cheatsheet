@@ -219,4 +219,94 @@ def dfs(n:int,groups:str,left:int,right:int):
                 dfs(n,groups+i,left,right+1)
 dfs(int(input()),'',0,0)
 (5)树 
-[1]
+[1]二叉树的深度和叶子数目
+class TreeNode:
+    def __init__(self):
+        self.left = None
+        self.right = None
+
+def tree_height(node):
+    if node is None:
+        return -1  # 根据定义，空树高度为-1
+    return max(tree_height(node.left), tree_height(node.right)) + 1
+
+def count_leaves(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    return count_leaves(node.left) + count_leaves(node.right)
+
+n = int(input())  # 读取节点数量
+nodes = [TreeNode() for _ in range(n)]
+has_parent = [False] * n  # 用来标记节点是否有父节点
+
+for i in range(n):
+    left_index, right_index = map(int, input().split())
+    if left_index != -1:
+        nodes[i].left = nodes[left_index]
+        has_parent[left_index] = True
+    if right_index != -1:
+        #print(right_index)
+        nodes[i].right = nodes[right_index]
+        has_parent[right_index] = True
+
+# 寻找根节点，也就是没有父节点的节点
+root_index = has_parent.index(False)
+root = nodes[root_index]
+
+# 计算高度和叶子节点数
+height = tree_height(root)
+leaves = count_leaves(root)
+[2]后序表达式改队列表达式
+class TreeNode:
+    def __init__(self,value):
+        self.value=value
+        self.left=None
+        self.right=None
+def buildtree(s):
+    stack=[]
+    
+    for char in s:
+        node=TreeNode(char)
+        if 'A'<=char<='Z':
+            node.right=stack.pop()
+            node.left=stack.pop()
+        stack.append(node)
+    return stack[0]
+def level_order_traversal(root):
+    queue=[root]
+    traversal=[]
+    while queue:
+        node=queue.pop(0)
+        traversal.append(node.value)
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+    return traversal
+n=int(input().strip())
+for i in range(n):
+    s=input().strip()
+    root=buildtree(s)
+    print(''.join(level_order_traversal(root)[::-1]))
+[3]前中序建树转后序
+class TreeNode:
+    def __init__(self,value):
+        self.value=value
+        self.left=None
+        self.right=None
+def buildtree(pre,mid):
+    if not pre or not mid:
+        return None
+    root_value=pre[0]
+    root=TreeNode(root_value)
+    root_midorder=mid.index(root_value)
+    root.left=buildtree(pre[1:1+root_midorder],mid[:root_midorder])
+    root.right=buildtree(pre[root_midorder+1:],mid[1+root_midorder:])
+    return root
+def postorder(root):
+    if root is None:
+        return ''
+    return postorder(root.left)+postorder(root.right)+root.value
+[4]
