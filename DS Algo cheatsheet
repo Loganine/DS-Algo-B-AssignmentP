@@ -118,6 +118,105 @@ for i in lis:
 print(int(n*(n-1)/2-ans))
 
 4.八皇后问题（可扩展为n皇后问题）            
-
+def get_queen_answers(n):
+    answers=[]
+    queens=[-1]*n
+    def backtrack(hang):
+        if hang==n:
+            answers.append(queens.copy())
+        else:
+            for lie in range(n):
+                if is_valid(hang,lie):
+                    queens[hang]=lie#put the queen(hang) to the lieth col
+                    backtrack(hang+1)#back to the next row
+                    queens[hang]=-1
+    def is_valid(hang,lie):
+        for h in range(hang):
+            if queens[h]==lie or abs(lie-queens[h])==abs(hang-h):
+                return False
+        return True
+    backtrack(0)
+    return answers
+def get_needed_queens(b):
+    ans=get_queen_answers(8)
+    if b>len(ans):
+        return None
+    needed_queens=''.join(str(lie+1)for lie in ans[b-1])
+    return needed_queens
 5.约瑟夫问题（存在变式）
-暂时不放代码了，睡觉！
+def Josephus(names,m):
+    queue=[]
+    for i in names:
+        queue.append(i)
+    while len(queue)>1:
+        for i in range(m):
+            queue.append(queue.pop(0))
+        queue.pop(0)
+    return queue[0]
+(从第一个人开始数)
+    n,p,m=map(int,input().split())
+    if n==m==p==0:
+        break
+    num=[i for i in range(1,n+1)]
+    for i in range(p-1):
+        temp=num.pop(0)
+        num.append(temp)
+    index=0
+    ans=[]
+    while len(num)>1:
+        temp=num.pop(0)
+        index+=1
+        if index==m:
+            index=0
+            ans.append(temp)
+            continue
+        num.append(temp)
+    ans.append(num[0])
+6.递归
+(1)斐波那契数列
+from functools import lru_cache
+@lru_cache(maxsize=2000)
+def fib(n):
+    if n==0:
+        return 0
+    elif n==1:
+        return 1
+    else:
+        return fib(n-1)+fib(n-2)
+(2)汉诺塔问题
+def moveone(num:int,start:str,end:str):
+    print('{}:{}->{}'.format(num,start,end))
+def move(num:int,start:str,middle:str,end:str):
+    if num==1:
+        moveone(1,start,end)
+    else:
+        move(num-1,start,end,middle) #从出发点经过终点将n-1个木块放在中间点
+        moveone(num,start,end)
+        move(num-1,middle,start,end) #从中间点经过出发点将n-1个木块放在终点
+n,a,b,c=input().split()
+move(int(n),a,b,c)
+(3)谢尔宾斯基分形三角形(the Sierbinski Fractal)
+def f(n):
+    if n==1:
+        return [' /\\ ','/__\\']
+    t=f(n-1)
+    x=2**(n-1)
+    res=[' '*x + u + ' '*x for u in t]
+    res.extend(u+u for u in t)
+    return res
+(4)dfs 括号生成 (同时可以看作合法出栈序列的进栈出栈顺序)
+ans=[]
+def dfs(n:int,groups:str,left:int,right:int):
+    global ans
+    if len(groups)==2*n:
+        ans.append(groups)
+    for i in '()':
+        if i=='(':
+            if left<n:
+                dfs(n,groups+i,left+1,right)
+        else:
+            if right<left and right<n:
+                dfs(n,groups+i,left,right+1)
+dfs(int(input()),'',0,0)
+(5)树 
+[1]
