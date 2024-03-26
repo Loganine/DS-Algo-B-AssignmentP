@@ -1,26 +1,26 @@
-可能用到的非课程知识点：
-1.defaultdict可以用来创建键去重的字典。
+# 一、可能用到的非课程知识点：
+## 1.defaultdict可以用来创建键去重的字典。
 引用方式:from collections import defaultdict
-2.A是一个列表，A[~i]表示A的倒数第i项。
-3.enumerate函数可以实现对一个数组中的元素匹配对应的指标。
-4.permutations函数可以呈现数组中任取若干项排列组合
+## 2.A是一个列表，A[~i]表示A的倒数第i项。
+## 3.enumerate函数可以实现对一个数组中的元素匹配对应的指标。
+## 4.permutations函数可以呈现数组中任取若干项排列组合
 引用方式：from itertools import permutations
-可能用到的本课程知识点：
-1.类
+# 二、可能用到的本课程知识点：
+## 1.类
 要规定init等函数，很重要但是很难。
-2.栈与队列
+## 2.栈与队列
 栈：一端进一端出；队列：一端进另一端出
-3.树
+## 3.树
 掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念
-4.排序
-冒泡排序：左右大小相反就互换位置，平均复杂度、最坏复杂度o(n^2)；
-选择排序：每次遍历把最小的放在未排好的第一项，平均复杂度、最坏复杂度o(n^2);
-插入排序：从前往后把每一项插入前面已经排好的序列的正确位置，平均复杂度、最坏复杂度o(n^2);
-希尔排序：分组插入排序，然后合并，平均复杂度o(n^4/3)，最坏复杂度o(n^3/2);
-快排：选取一个基准，比基准大的放右边，小的放左边，递归处理，平均复杂度o(nlogn),最坏复杂度o(n^2);
-归并排序:申请额外空间，双指针移动，小的先放，大的后放，分治策略，平均复杂度、最坏复杂度o(nlogn)
-可能用到的源代码：
-1.快排
+## 4.排序
+### (1)冒泡排序：左右大小相反就互换位置，平均复杂度、最坏复杂度o(n^2)；
+### (2)选择排序：每次遍历把最小的放在未排好的第一项，平均复杂度、最坏复杂度o(n^2);
+### (3)插入排序：从前往后把每一项插入前面已经排好的序列的正确位置，平均复杂度、最坏复杂度o(n^2);
+### (4)希尔排序：分组插入排序，然后合并，平均复杂度o(n^4/3)，最坏复杂度o(n^3/2);
+### (5)快排：选取一个基准，比基准大的放右边，小的放左边，递归处理，平均复杂度o(nlogn),最坏复杂度o(n^2);
+### (6)归并排序:申请额外空间，双指针移动，小的先放，大的后放，分治策略，平均复杂度、最坏复杂度o(nlogn)
+# 三、可能用到的源代码：
+## 1.快排
 def quicksort(arr, left, right):
     if left < right:
         partition_pos = partition(arr, left, right)
@@ -48,7 +48,7 @@ arr = [22, 11, 88, 66, 55, 77, 33, 44]#这里是举个例子
 quicksort(arr, 0, len(arr) - 1)
 print(arr)
 
-2.归并排序
+## 2.归并排序
 def mergeSort(arr):
 	if len(arr) > 1:
 		mid = len(arr)//2
@@ -105,7 +105,7 @@ def merge(left,right):
     merged+=right[j:]
     return merged,ans #返回值为排好序的列表与逆序数
 
-3.只求逆序数（逆天版本）这里用到的是bisect库。
+## 3.只求逆序数（逆天版本）这里用到的是bisect库。
 from bisect import *
 n=int(input())
 ans=0
@@ -117,7 +117,7 @@ for i in lis:
     insort_left(new,i)
 print(int(n*(n-1)/2-ans))
 
-4.八皇后问题（可扩展为n皇后问题）            
+## 4.八皇后问题（可扩展为n皇后问题）            
 def get_queen_answers(n):
     answers=[]
     queens=[-1]*n
@@ -143,7 +143,7 @@ def get_needed_queens(b):
         return None
     needed_queens=''.join(str(lie+1)for lie in ans[b-1])
     return needed_queens
-5.约瑟夫问题（存在变式）
+## 5.约瑟夫问题（存在变式）
 def Josephus(names,m):
     queue=[]
     for i in names:
@@ -172,8 +172,8 @@ def Josephus(names,m):
             continue
         num.append(temp)
     ans.append(num[0])
-6.递归
-(1)斐波那契数列
+## 6.递归
+### (1)斐波那契数列
 from functools import lru_cache
 @lru_cache(maxsize=2000)
 def fib(n):
@@ -183,7 +183,7 @@ def fib(n):
         return 1
     else:
         return fib(n-1)+fib(n-2)
-(2)汉诺塔问题
+### (2)汉诺塔问题
 def moveone(num:int,start:str,end:str):
     print('{}:{}->{}'.format(num,start,end))
 def move(num:int,start:str,middle:str,end:str):
@@ -195,7 +195,7 @@ def move(num:int,start:str,middle:str,end:str):
         move(num-1,middle,start,end) #从中间点经过出发点将n-1个木块放在终点
 n,a,b,c=input().split()
 move(int(n),a,b,c)
-(3)谢尔宾斯基分形三角形(the Sierbinski Fractal)
+### (3)谢尔宾斯基分形三角形(the Sierbinski Fractal)
 def f(n):
     if n==1:
         return [' /\\ ','/__\\']
@@ -204,7 +204,7 @@ def f(n):
     res=[' '*x + u + ' '*x for u in t]
     res.extend(u+u for u in t)
     return res
-(4)dfs 括号生成 (同时可以看作合法出栈序列的进栈出栈顺序)
+### (4)dfs 括号生成 (同时可以看作合法出栈序列的进栈出栈顺序)
 ans=[]
 def dfs(n:int,groups:str,left:int,right:int):
     global ans
@@ -218,8 +218,8 @@ def dfs(n:int,groups:str,left:int,right:int):
             if right<left and right<n:
                 dfs(n,groups+i,left,right+1)
 dfs(int(input()),'',0,0)
-(5)树 
-[1]二叉树的深度和叶子数目
+### (5)树 
+#### [1]二叉树的深度和叶子数目
 class TreeNode:
     def __init__(self):
         self.left = None
@@ -258,7 +258,7 @@ root = nodes[root_index]
 # 计算高度和叶子节点数
 height = tree_height(root)
 leaves = count_leaves(root)
-[2]后序表达式改队列表达式
+#### [2]后序表达式改队列表达式
 class TreeNode:
     def __init__(self,value):
         self.value=value
@@ -290,7 +290,7 @@ for i in range(n):
     s=input().strip()
     root=buildtree(s)
     print(''.join(level_order_traversal(root)[::-1]))
-[3]前中序建树转后序
+#### [3]前中序建树转后序
 class TreeNode:
     def __init__(self,value):
         self.value=value
@@ -309,4 +309,3 @@ def postorder(root):
     if root is None:
         return ''
     return postorder(root.left)+postorder(root.right)+root.value
-[4]
