@@ -25,6 +25,7 @@ class Stack:
         return self.items[len(self.items)-1]
     def size(self):
         return len(self.items)
+```
 ## 3.树
 掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念
 ## 4.排序
