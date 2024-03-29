@@ -11,6 +11,20 @@
 要规定init等函数，很重要但是很难。
 ## 2.栈与队列
 栈：一端进一端出；队列：一端进另一端出
+```python
+class Stack:
+    def __init__(self):
+        self.items=[]
+    def is_empty(self):
+        return self.items=[]
+    def Push(self,item):
+        self.items.append(item)
+    def Pop(self):
+        self.items.pop()
+    def peek(self):
+        return self.items[len(self.items)-1]
+    def size(self):
+        return len(self.items)
 ## 3.树
 掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念
 ## 4.排序
