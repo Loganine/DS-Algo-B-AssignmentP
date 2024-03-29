@@ -26,8 +26,22 @@ class Stack:
     def size(self):
         return len(self.items)
 ```
+```python
+class Queue:#前进后出
+    def __init__(self):
+        self.items=[]
+    def is_empty(self):
+        return self.items==[]
+    def enqueue(self,item):
+        self.items.insert(0,item)
+    def dequeue(self,item):
+        self.items.pop()
+    def size(self):
+        return len(self.items)
+```
 ## 3.树
 掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念
+
 ## 4.排序
 ### (1)冒泡排序
 左右大小相反就互换位置，平均复杂度、最坏复杂度o(n^2)；
@@ -41,6 +55,54 @@ class Stack:
 选取一个基准，比基准大的放右边，小的放左边，递归处理，平均复杂度o(nlogn),最坏复杂度o(n^2);
 ### (6)归并排序
 申请额外空间，双指针移动，小的先放，大的后放，分治策略，平均复杂度、最坏复杂度o(nlogn)
+## 5.堆（二叉堆）子节点永远小于父节点。
+```python
+class Binheap:
+    def __init__(self):
+        self.heaplist=[0]
+        self.currentsize=0
+    def percup(self,i):
+        while i//2>0:
+            if self.heaplist[i]<self.heaplist[i//2]:
+                tmp=self.heaplist[i//2]
+                self.heaplist[i//2]=self.heaplist[i]
+                self.heaplist[i]=tmp
+            i=i//2
+    def insert(self,k):
+        self.heaplist.append(k)
+        self.currentsize+=1
+        self.percup(self.currentsize)
+    def percdown(self,i):
+        while (i*2)<=self.currentsize:
+            mc=self.minchild(i)
+            if self.heaplist[i]>self.heaplist[mc]:
+                tmp=self.heaplist[i]
+                self.heaplist[i]=self.heaplist[mc]
+                self.heaplist[mc]=tmp
+            i=mc
+    def minchild(self,i):
+        if i*2+1>self.currentsize:
+            return i*2
+        else:
+            if self.heaplist[i*2]<self.heaplist[i*2+1]:
+                return i*2
+            else:
+                return i*2+1
+    def delmin(self):
+        retval=self.heaplist[1]
+        self.heaplist[1]=self.heaplist[self.currentsize]
+        self.currentsize-=1
+        self.heaplist.pop()
+        self.percdown(1)
+        return retval
+    def buildheap(self,alist):
+        i=len(alist)//2
+        self.currentsize=len(alist)
+        self.heaplist=[0]+alist[:]
+        while i>0:
+            self.percdown(i)
+            i-=1
+```
 # 三、可能用到的源代码：
 ## 1.快排
 
