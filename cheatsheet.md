@@ -42,6 +42,7 @@ class Queue:#前进后出
 ```
 ### 3.树
 掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念(相关代码见下)
+#### (1)哈夫曼树
 ```python
 import heapq
 class TreeNode:
@@ -110,6 +111,9 @@ while True:
     except EOFError:
         break
 ```
+
+#### (2)平衡二叉搜索树(AVL树)
+
 ```python
 class Node:
     def __init__(self, value):
