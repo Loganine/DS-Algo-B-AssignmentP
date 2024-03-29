@@ -41,8 +41,149 @@ class Queue:#前进后出
         return len(self.items)
 ```
 ### 3.树
-掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念
-
+掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念(相关代码见下)
+```python
+import heapq
+class TreeNode:
+    def __init__(self,weight,char=None):
+        self.weight=weight
+        self.char=char
+        self.left=None
+        self.right=None
+    def __lt__(self,other):
+        if self.weight==other.weight:
+            return self.char<other.char
+        return self.weight<other.weight
+def build_huffman_tree(characters):
+    heap=[]
+    for char,weight in characters.items():
+        heapq.heappush(heap,TreeNode(weight,char))
+    while len(heap)>1:
+        left=heapq.heappop(heap)
+        right=heapq.heappop(heap)
+        merged=TreeNode(left.weight+right.weight,min(left.char,right.char))
+        merged.left=left
+        merged.right=right
+        heapq.heappush(heap,merged)
+    return heap[0]
+def encode_huffman_tree(root):
+    codes={}
+    def traverse(node,code):
+        if node.left is None and node.right is None:
+            codes[node.char]=code
+        else:
+            traverse(node.left,code+'0')
+            traverse(node.right,code+'1')
+    traverse(root,'')
+    return codes
+def huffman_encoding(codes,string):
+    encoded=''
+    for char in string:
+        encoded+=codes[char]
+    return encoded
+def huffman_decoding(root,encoded_string):
+    decoded=''
+    node=root
+    for bit in encoded_string:
+        if bit=='0':
+            node=node.left
+        else:
+            node=node.right
+        if node.left is None and node.right is None:
+            decoded+=node.char
+            node=root
+    return decoded
+n=int(input())
+characters={}
+for i in range(n):
+    char,weight=input().split()
+    characters[char]=int(weight)
+huffman_tree=build_huffman_tree(characters)
+codes=encode_huffman_tree(huffman_tree)
+while True:
+    try:
+        s=input()
+        if s[0] in '01':
+            print(huffman_decoding(huffman_tree,s))
+        else:
+            print(huffman_encoding(codes,s))
+    except EOFError:
+        break
+```
+```python
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+        self.height = 1
+class AVL:
+    def __init__(self):
+        self.root = None
+    def insert(self, value):
+        if not self.root:
+            self.root = Node(value)
+        else:
+            self.root = self._insert(value, self.root)
+    def _insert(self, value, node):
+        if not node:
+            return Node(value)
+        elif value < node.value:
+            node.left = self._insert(value, node.left)
+        else:
+            node.right = self._insert(value, node.right)
+        node.height = 1 + max(self._get_height(node.left), self._get_height(node.right)
+        balance = self._get_balance(node)
+        if balance > 1:
+            if value < node.left.value:	# 树形是 LL
+                return self._rotate_right(node)
+            else:	# 树形是 LR
+                node.left = self._rotate_left(node.left)
+                return self._rotate_right(node)
+        if balance < -1:
+            if value > node.right.value:	# 树形是 RR
+                return self._rotate_left(node)
+            else:	# 树形是 RL
+                node.right = self._rotate_right(node.right)
+                return self._rotate_left(node)
+        return node
+    def _get_height(self, node):
+        if not node:
+            return 0
+        return node.height
+    def _get_balance(self, node):
+        if not node:
+            return 0
+        return self._get_height(node.left) - self._get_height(node.right)
+    def _rotate_left(self, z):
+        y = z.right
+        T2 = y.left
+        y.left = z
+        z.right = T2
+        z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
+        y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
+        return y
+    def _rotate_right(self, y):
+        x = y.left
+        T2 = x.right
+        x.right = y
+        y.left = T2
+        y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
+        x.height = 1 + max(self._get_height(x.left), self._get_height(x.right))
+        return x
+    def preorder(self):
+        return self._preorder(self.root)
+    def _preorder(self, node):
+        if not node:
+            return []
+        return [node.value] + self._preorder(node.left) + self._preorder(node.right)
+n = int(input().strip())
+sequence = list(map(int, input().strip().split()))
+avl = AVL()
+for value in sequence:
+    avl.insert(value)
+print(' '.join(map(str, avl.preorder())))
+```
 ### 4.排序
 #### (1)冒泡排序
 左右大小相反就互换位置，平均复杂度、最坏复杂度o(n^2)；
