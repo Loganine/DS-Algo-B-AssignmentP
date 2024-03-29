@@ -1,15 +1,16 @@
-# 一、可能用到的非课程知识点：
+# DS Algo Cheatsheet
+## 一、可能用到的非课程知识点：
 
-## 1.defaultdict可以用来创建键去重的字典。
+### 1.defaultdict可以用来创建键去重的字典。
 引用方式:from collections import defaultdict
-## 2.A是一个列表，A[~i]表示A的倒数第i项。
-## 3.enumerate函数可以实现对一个数组中的元素匹配对应的指标。
-## 4.permutations函数可以呈现数组中任取若干项排列组合
+### 2.A是一个列表，A[~i]表示A的倒数第i项。
+### 3.enumerate函数可以实现对一个数组中的元素匹配对应的指标。
+### 4.permutations函数可以呈现数组中任取若干项排列组合
 引用方式：from itertools import permutations
-# 二、可能用到的本课程知识点：
-## 1.类
+## 二、可能用到的本课程知识点：
+### 1.类
 要规定init等函数，很重要但是很难。
-## 2.栈与队列
+### 2.栈与队列
 栈：一端进一端出；队列：一端进另一端出
 ```python
 class Stack:
@@ -39,23 +40,23 @@ class Queue:#前进后出
     def size(self):
         return len(self.items)
 ```
-## 3.树
+### 3.树
 掌握递归定义，节点，边，父子兄弟节点，层级，深度等概念
 
-## 4.排序
-### (1)冒泡排序
+### 4.排序
+#### (1)冒泡排序
 左右大小相反就互换位置，平均复杂度、最坏复杂度o(n^2)；
-### (2)选择排序
+#### (2)选择排序
 每次遍历把最小的放在未排好的第一项，平均复杂度、最坏复杂度o(n^2);
-### (3)插入排序
+#### (3)插入排序
 从前往后把每一项插入前面已经排好的序列的正确位置，平均复杂度、最坏复杂度o(n^2);
-### (4)希尔排序
+#### (4)希尔排序
 分组插入排序，然后合并，平均复杂度o(n^4/3)，最坏复杂度o(n^3/2);
-### (5)快排
+#### (5)快排
 选取一个基准，比基准大的放右边，小的放左边，递归处理，平均复杂度o(nlogn),最坏复杂度o(n^2);
-### (6)归并排序
+#### (6)归并排序
 申请额外空间，双指针移动，小的先放，大的后放，分治策略，平均复杂度、最坏复杂度o(nlogn)
-## 5.堆（二叉堆）
+### 5.堆（二叉堆）
 子节点永远小于父节点。
 ```python
 class Binheap:
@@ -104,8 +105,8 @@ class Binheap:
             self.percdown(i)
             i-=1
 ```
-# 三、可能用到的源代码：
-## 1.快排
+## 三、可能用到的源代码：
+### 1.快排
 
 ```python
 def quicksort(arr, left, right):
@@ -138,7 +139,7 @@ print(arr)
 
 
 
-## 2.归并排序
+### 2.归并排序
 
 ```python
 def mergeSort(arr):
@@ -206,7 +207,7 @@ def merge(left,right):
 
 
 
-## 3.只求逆序数（逆天版本）这里用到的是bisect库。
+### 3.只求逆序数（逆天版本）这里用到的是bisect库。
 ```python
 from bisect import *
 n=int(input())
@@ -222,7 +223,7 @@ print(int(n*(n-1)/2-ans))
 
 
 
-## 4.八皇后问题（可扩展为n皇后问题）            
+### 4.八皇后问题（可扩展为n皇后问题）            
 ```python
 def get_queen_answers(n):
     answers=[]
@@ -252,7 +253,7 @@ def get_needed_queens(b):
 ```
 
 
-## 5.约瑟夫问题（存在变式）
+### 5.约瑟夫问题（存在变式）
 ```python
 def Josephus(names,m):
     queue=[]
@@ -287,13 +288,12 @@ def Josephus(names,m):
             continue
         num.append(temp)
     ans.append(num[0])
-
-## 6.递归
 ```
+### 6.递归
 
 
 
-### (1)斐波那契数列
+#### (1)斐波那契数列
 ```python
 from functools import lru_cache
 @lru_cache(maxsize=2000)
@@ -307,7 +307,7 @@ def fib(n):
 ```
 
 
-### (2)汉诺塔问题
+#### (2)汉诺塔问题
 ```python
 def moveone(num:int,start:str,end:str):
     print('{}:{}->{}'.format(num,start,end))
@@ -323,7 +323,7 @@ move(int(n),a,b,c)
 ```
 
 
-### (3)谢尔宾斯基分形三角形(the Sierbinski Fractal)
+#### (3)谢尔宾斯基分形三角形(the Sierbinski Fractal)
 ```python
 def f(n):
     if n==1:
@@ -336,7 +336,7 @@ def f(n):
 ```
 
 
-### (4)dfs 括号生成 (同时可以看作合法出栈序列的进栈出栈顺序)
+#### (4)dfs 括号生成 (同时可以看作合法出栈序列的进栈出栈顺序)
 ```python
 ans=[]
 def dfs(n:int,groups:str,left:int,right:int):
@@ -354,8 +354,8 @@ dfs(int(input()),'',0,0)
 ```
 
 
-### (5)树 
-#### [1]二叉树的深度和叶子数目
+#### (5)树 
+##### [1]二叉树的深度和叶子数目
 ```python
 class TreeNode:
     def __init__(self):
@@ -398,7 +398,7 @@ leaves = count_leaves(root)
 ```
 
 
-#### [2]后序表达式改队列表达式
+##### [2]后序表达式改队列表达式
 ```python
 class TreeNode:
     def __init__(self,value):
@@ -437,7 +437,7 @@ for i in range(n):
 #### 
 ```
 
-#### [3]前中序建树转后序
+##### [3]前中序建树转后序
 ```python
 class TreeNode:
     def __init__(self,value):
@@ -459,7 +459,7 @@ def postorder(root):
     return postorder(root.left)+postorder(root.right)+root.value
 ```
 
-#### [4]万能树
+##### [4]万能树
 
 ```python
 class TreeNode:
