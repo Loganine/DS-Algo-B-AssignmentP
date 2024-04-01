@@ -664,4 +664,22 @@ def zhbuildtree(mid,post):
     root.left=zhbuildtree(mid[:root_midorder],post[:root_midorder])
     return root
 ```
-
+#### (6)拉链
+```python
+def dfs(x,y):
+    if x==-1 and y==-1:
+        return True
+    if x>=0 and a[x]==c[x+y+1]:
+        if dfs(x-1,y):
+            return True
+    if y>=0 and b[y]==c[x+y+1]:
+        if dfs(x,y-1):
+            return True
+    return False
+for i in range(int(input())):
+    a,b,c=input().split()
+    if dfs(len(a)-1,len(b)-1):
+        print(f'Data set {i+1}: yes')
+    else:
+        print(f'Data set {i+1}: no')
+```
