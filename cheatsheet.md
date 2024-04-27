@@ -1031,3 +1031,95 @@ def kruskal(graph):
 
     return minimum_spanning_tree
 ```
+### 7.栈的应用
+#### （1）调度场算法
+用于前中后序表达式的互相转换。
+```python
+#中序转后序
+def zhongzhuanhou(string):
+    precedence={"+":1,'-':1,'*':2,'/':2}
+    number=''
+    stack=[]
+    answer=[]
+    for char in string:
+        if char.isnumeric() or char=='.':
+            number+=char
+        else:
+            if number:
+                num=float(number)
+                answer.append(int(num) if num.is_integer() else num)
+                number=''
+            if char in '+-*/':
+                while stack and stack[-1] in '+-*/' and precedence[char]<=precedence[stack[-1]]:
+                    answer.append(stack.pop())
+                stack.append(char)
+            elif char=='(':
+                stack.append(char)
+            elif char==')':
+                while stack and stack[-1]!="(":
+                    answer.append(stack.pop())
+                stack.pop()
+    if number:
+        num=float(number)
+        answer.append(int(num) if num.is_integer() else num)
+    while stack:
+        answer.append(stack.pop())
+    return ' '.join(str(x) for x in answer)
+n=int(input())
+for i in range(n):
+    s=input()
+    print(zhongzhuanhou(s))
+```
+```python
+#前缀表达式（波兰表达式）求值
+def Operator(num1,num2,operator):
+    if operator == '+':
+        result = float(num1) + float(num2)
+    elif operator == '-':
+        result = float(num1) - float(num2)
+    elif operator == '*':
+        result = float(num1) * float(num2)
+    else:
+        if num2 == '0.0':
+            return 'ERROR'       
+        result = float(num1) / float(num2)
+    return str(result)
+def DealExpression(strs):
+    stack = []
+    operator = ['+','-','*','/']
+    length = len(strs)
+    if length == 1:
+        result = float(strs[0])
+    elif length == 2:
+        result = Operator('0',strs[1],strs[0])
+    else:
+        for i in range(length-1,-1,-1):
+            if strs[i] not in operator:
+                stack.append(strs[i])
+            if strs[i] in operator:
+                num1 = stack.pop()
+                num2 = stack.pop()
+                result = Operator(num1,num2,strs[i])
+                if result == 'ERROR':
+                    return result
+                stack.append(result)
+        result = stack[0]
+
+    return result
+
+strs = input().split(" ")
+result = DealExpression(strs)
+if result == 'ERROR':
+    print('ERROR')
+else:print("%.6f"%float(result))
+```
+```python
+#上述题目的简单解法（代码简单）
+def cal(s):
+    t=s.pop(0)
+    if t in '+-*/':
+        return str(eval(cal(s)+t+cal(s)))
+    else: return t
+s=input().split()
+print(f'{float(cal(s)):.6f}')
+```
