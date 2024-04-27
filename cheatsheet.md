@@ -1,15 +1,19 @@
 # DS Algo Cheatsheet
 ## 一、可能用到的非课程知识点：
 
-### 1.defaultdict可以用来创建键去重的字典。
+### 1.defaultdict
+可以用来创建具有默认值的字典。例如int默认值为0，list默认值为[]等。
 引用方式:from collections import defaultdict
-### 2.A是一个列表，A[~i]表示A的倒数第i项。
-### 3.enumerate函数可以实现对一个数组中的元素匹配对应的指标。
-### 4.permutations函数可以呈现数组中任取若干项排列组合
+### 2.A[~i]
+A是一个列表，A[~i]表示A的倒数第i项。
+### 3.enumerate函数
+可以实现对一个数组中的元素匹配对应的指标。
+### 4.permutations函数
+可以呈现数组中任取若干项排列组合
 引用方式：from itertools import permutations
 ## 二、可能用到的本课程知识点：
 ### 1.类
-要规定init等函数，很重要但是很难。
+要规定init等方法，很重要但是很难。
 ### 2.栈与队列
 栈：一端进一端出；队列：一端进另一端出
 ```python
@@ -411,37 +415,7 @@ print(int(n*(n-1)/2-ans))
 
 
 
-### 4.八皇后问题（可扩展为n皇后问题）            
-```python
-def get_queen_answers(n):
-    answers=[]
-    queens=[-1]*n
-    def backtrack(hang):
-        if hang==n:
-            answers.append(queens.copy())
-        else:
-            for lie in range(n):
-                if is_valid(hang,lie):
-                    queens[hang]=lie#put the queen(hang) to the lieth col
-                    backtrack(hang+1)#back to the next row
-                    queens[hang]=-1
-    def is_valid(hang,lie):
-        for h in range(hang):
-            if queens[h]==lie or abs(lie-queens[h])==abs(hang-h):
-                return False
-        return True
-    backtrack(0)
-    return answers
-def get_needed_queens(b):
-    ans=get_queen_answers(8)
-    if b>len(ans):
-        return None
-    needed_queens=''.join(str(lie+1)for lie in ans[b-1])
-    return needed_queensy
-```
-
-
-### 5.约瑟夫问题（存在变式）
+### 4.约瑟夫问题（存在变式）
 ```python
 def Josephus(names,m):
     queue=[]
@@ -477,7 +451,7 @@ def Josephus(names,m):
         num.append(temp)
     ans.append(num[0])
 ```
-### 6.递归
+### 5.递归
 
 
 
@@ -707,7 +681,39 @@ def zhbuildtree(mid,post):
     root.left=zhbuildtree(mid[:root_midorder],post[:root_midorder])
     return root
 ```
-#### (6)拉链
+#### (6)八皇后问题（n皇后问题）
+八皇后问题（可扩展为n皇后问题）            
+```python
+def get_queen_answers(n):
+    answers=[]
+    queens=[-1]*n
+    def backtrack(hang):
+        if hang==n:
+            answers.append(queens.copy())
+        else:
+            for lie in range(n):
+                if is_valid(hang,lie):
+                    queens[hang]=lie#put the queen(hang) to the lieth col
+                    backtrack(hang+1)#back to the next row
+                    queens[hang]=-1
+    def is_valid(hang,lie):
+        for h in range(hang):
+            if queens[h]==lie or abs(lie-queens[h])==abs(hang-h):
+                return False
+        return True
+    backtrack(0)
+    return answers
+def get_needed_queens(b):
+    ans=get_queen_answers(8)
+    if b>len(ans):
+        return None
+    needed_queens=''.join(str(lie+1)for lie in ans[b-1])
+    return needed_queens
+```
+
+
+
+#### (7)拉链
 ```python
 def dfs(x,y):
     if x==-1 and y==-1:
@@ -725,4 +731,303 @@ for i in range(int(input())):
         print(f'Data set {i+1}: yes')
     else:
         print(f'Data set {i+1}: no')
+```
+
+
+
+### 6.图（包含bfs）
+#### (1)词梯
+```python
+from collections import defaultdict
+dic=defaultdict(list)
+n,lis=int(input()),[]
+for i in range(n):
+    lis.append(input())
+for word in lis:
+    for i in range(len(word)):
+        bucket=word[:i]+'_'+word[i+1:]
+        dic[bucket].append(word)
+def bfs(start,end,dic):
+    queue=[(start,[start])]
+    visited=[start]
+    while queue:
+        currentword,currentpath=queue.pop(0)
+        if currentword==end:
+            return ' '.join(currentpath)
+        for i in range(len(currentword)):
+            bucket=currentword[:i]+'_'+currentword[i+1:]
+            for nbr in dic[bucket]:
+                if nbr not in visited:
+                    visited.append(nbr)
+                    newpath=currentpath+[nbr]
+                    queue.append((nbr,newpath))
+    return 'NO'
+start,end=map(str,input().split())    
+print(bfs(start,end,dic))
+```
+#### (2)骑士周游
+这里用到了Warnsdorff算法，即优先探索难以达到的位置，即下列代码中的ordered_by_avail函数。
+```python
+class Graph:
+    def __init__(self):
+        self.vertices = {}
+        self.num_vertices = 0
+
+    def add_vertex(self, key):
+        self.num_vertices = self.num_vertices + 1
+        new_ertex = Vertex(key)
+        self.vertices[key] = new_ertex
+        return new_ertex
+
+    def get_vertex(self, n):
+        if n in self.vertices:
+            return self.vertices[n]
+        else:
+            return None
+
+    def __len__(self):
+        return self.num_vertices
+
+    def __contains__(self, n):
+        return n in self.vertices
+
+    def add_edge(self, f, t, cost=0):
+        if f not in self.vertices:
+            nv = self.add_vertex(f)
+        if t not in self.vertices:
+            nv = self.add_vertex(t)
+        self.vertices[f].add_neighbor(self.vertices[t], cost)
+        #self.vertices[t].add_neighbor(self.vertices[f], cost)
+
+    def getVertices(self):
+        return list(self.vertices.keys())
+
+    def __iter__(self):
+        return iter(self.vertices.values())
+
+
+class Vertex:
+    def __init__(self, num):
+        self.key = num
+        self.connectedTo = {}
+        self.color = 'white'
+        self.distance = sys.maxsize
+        self.previous = None
+        self.disc = 0
+        self.fin = 0
+
+    def __lt__(self,o):
+        return self.key < o.key
+
+    def add_neighbor(self, nbr, weight=0):
+        self.connectedTo[nbr] = weight
+
+
+    # def setDiscovery(self, dtime):
+    #     self.disc = dtime
+    #
+    # def setFinish(self, ftime):
+    #     self.fin = ftime
+    #
+    # def getFinish(self):
+    #     return self.fin
+    #
+    # def getDiscovery(self):
+    #     return self.disc
+
+    def get_neighbors(self):
+        return self.connectedTo.keys()
+
+    # def getWeight(self, nbr):
+    #     return self.connectedTo[nbr]
+
+    def __str__(self):
+        return str(self.key) + ":color " + self.color + ":disc " + str(self.disc) + ":fin " + str(
+            self.fin) + ":dist " + str(self.distance) + ":pred \n\t[" + str(self.previous) + "]\n"
+
+
+
+def knight_graph(board_size):
+    kt_graph = Graph()
+    for row in range(board_size):           #遍历每一行
+        for col in range(board_size):       #遍历行上的每一个格子
+            node_id = pos_to_node_id(row, col, board_size) #把行、列号转为格子ID
+            new_positions = gen_legal_moves(row, col, board_size) #按照 马走日，返回下一步可能位置
+            for row2, col2 in new_positions:
+                other_node_id = pos_to_node_id(row2, col2, board_size) #下一步的格子ID
+                kt_graph.add_edge(node_id, other_node_id) #在骑士周游图中为两个格子加一条边
+    return kt_graph
+
+def gen_legal_moves(row, col, board_size):
+    new_moves = []
+    move_offsets = [
+        (-1, -2),  # left-down-down
+        (-1, 2),  # left-up-up
+        (-2, -1),  # left-left-down
+        (-2, 1),  # left-left-up
+        (1, -2),  # right-down-down
+        (1, 2),  # right-up-up
+        (2, -1),  # right-right-down
+        (2, 1),  # right-right-up
+    ]
+    for r_off, c_off in move_offsets:
+        if (
+            0 <= row + r_off < board_size
+            and 0 <= col + c_off < board_size
+        ):
+            new_moves.append((row + r_off, col + c_off))
+    return new_moves
+
+def pos_to_node_id(x, y, bdSize):
+    return x * bdSize + y
+
+def legal_coord(row, col, board_size):
+    return 0 <= row < board_size and 0 <= col < board_size
+
+
+
+def knight_tour(n, path, u, limit):
+    u.color = "gray"
+    path.append(u)
+    if n < limit:
+        neighbors = ordered_by_avail(u)
+        #neighbors = sorted(list(u.get_neighbors()))
+        i = 0
+
+        for nbr in neighbors:
+            if nbr.color == "white" and \
+                knight_tour(n + 1, path, nbr, limit):
+                return True
+        else:
+            path.pop()
+            u.color = "white"
+            return False
+    else:
+        return True
+
+def ordered_by_avail(n):
+    res_list = []
+    for v in n.get_neighbors():
+        if v.color == "white":
+            c = 0
+            for w in v.get_neighbors():
+                if w.color == "white":
+                    c += 1
+            res_list.append((c,v))
+    res_list.sort(key = lambda x: x[0])
+    return [y[1] for y in res_list]
+
+class DFSGraph(Graph):
+    def __init__(self):
+        super().__init__()
+        self.time = 0
+
+    def dfs(self):
+        for vertex in self:
+            vertex.color = "white"
+            vertex.previous = -1
+        for vertex in self:
+            if vertex.color == "white":
+                self.dfs_visit(vertex)
+
+    def dfs_visit(self, start_vertex):
+        start_vertex.color = "gray"
+        self.time = self.time + 1
+        start_vertex.discovery_time = self.time
+        for next_vertex in start_vertex.get_neighbors():
+            if next_vertex.color == "white":
+                next_vertex.previous = start_vertex
+                self.dfs_visit(next_vertex)
+        start_vertex.color = "black"
+        self.time = self.time + 1
+        start_vertex.closing_time = self.time
+
+
+def main():
+    def NodeToPos(id):
+       return ((id//8, id%8))
+
+    bdSize = int(input())  # 棋盘大小
+    *start_pos, = map(int, input().split())  # 起始位置
+    g = knight_graph(bdSize)
+    start_vertex = g.get_vertex(pos_to_node_id(start_pos[0], start_pos[1], bdSize))
+    if start_vertex is None:
+        print("fail")
+        exit(0)
+
+    tour_path = []
+    done = knight_tour(0, tour_path, start_vertex, bdSize * bdSize-1)
+    if done:
+        print("success")
+    else:
+        print("fail")
+
+    #exit(0)
+
+    # 打印路径
+    cnt = 0
+    for vertex in tour_path:
+        cnt += 1
+        if cnt % bdSize == 0:
+            print()
+        else:
+            print(vertex.key, end=" ")
+            #print(NodeToPos(vertex.key), end=" ")   # 打印坐标
+
+if __name__ == '__main__':
+    main()
+```
+#### (3)最小生成树Kruskal算法
+运用并查集避免成环。
+```python
+class DisjointSet:
+    def __init__(self, num_vertices):
+        self.parent = list(range(num_vertices))
+        self.rank = [0] * num_vertices
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        root_x = self.find(x)
+        root_y = self.find(y)
+
+        if root_x != root_y:
+            if self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            elif self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            else:
+                self.parent[root_x] = root_y
+                self.rank[root_y] += 1
+
+
+def kruskal(graph):
+    num_vertices = len(graph)
+    edges = []
+
+    # 构建边集
+    for i in range(num_vertices):
+        for j in range(i + 1, num_vertices):
+            if graph[i][j] != 0:
+                edges.append((i, j, graph[i][j]))
+
+    # 按照权重排序
+    edges.sort(key=lambda x: x[2])
+
+    # 初始化并查集
+    disjoint_set = DisjointSet(num_vertices)
+
+    # 构建最小生成树的边集
+    minimum_spanning_tree = []
+
+    for edge in edges:
+        u, v, weight = edge
+        if disjoint_set.find(u) != disjoint_set.find(v):
+            disjoint_set.union(u, v)
+            minimum_spanning_tree.append((u, v, weight))
+
+    return minimum_spanning_tree
 ```
