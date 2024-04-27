@@ -250,6 +250,49 @@ class Binheap:
             self.percdown(i)
             i-=1
 ```
+### 6.图
+```python
+class Vertex:
+    def __init__(self,key):
+        self.id=key
+        self.connectedto={}
+    def addneighbor(self,nbr,weight=0):
+        self.connectedto[nbr]=weight
+    def __str__(self):
+        return str(self.id)+' connectedto: '+str([x.id for x in self.connectedto])
+    def getconnections(self):
+        return self.connectedto.keys()
+    def getid(self):
+        return self.id
+    def getweight(self,nbr):
+        return self.connectedto[nbr]
+class Graph:
+    def __init__(self):
+        self.vertlist={}
+        self.numVertices=0
+    def addVertex(self,key):
+        self.numVertices=self.numVertices+1
+        newVertex=Vertex(key)
+        self.vertlist[key]=newVertex
+        return newVertex
+    def getVertex(self,n):
+        if n in self.vertlist:
+            return self.vertlist[n]
+        else:
+            return None
+    def __contains__(self,n):
+        return n in self.vertlist
+    def addedge(self,f,t,weight=0):
+        if f not in self.vertlist:
+            nv=self.addVertex(f)
+        if t not in self.vertlist:
+            nv=self.addVertex(t)
+        self.vertlist[f].addneighbor(self.vertlist[t],weight)
+    def gervertices(self):
+        return self.vertlist.keys()
+    def __iter__(self):
+        return iter(self.vertlist.values())
+```
 ## 三、可能用到的源代码：
 ### 1.快排
 
