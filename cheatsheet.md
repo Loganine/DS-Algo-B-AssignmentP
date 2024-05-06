@@ -1123,3 +1123,131 @@ def cal(s):
 s=input().split()
 print(f'{float(cal(s)):.6f}')
 ```
+### 8.图
+#### （1）Dijkstra算法（以兔子与樱花为例）
+```python
+import heapq
+def dijkstra(adjacency,start):
+    distances={vertex:float('infinity') for vertex in adjacency}
+    prev={vertex:None for vertex in adjacency}
+    distances[start]=0
+    pq=[(0,start)]
+    while pq:
+        curdis,curv=heapq.heappop(pq)
+        if curdis>distances[curv]:
+            continue
+        for nbr,weight in adjacency[curv].items():
+            dis=curdis+weight
+            if dis<distances[nbr]:
+                distances[nbr]=dis
+                prev[nbr]=curv
+                heapq.heappush(pq,(dis,nbr))
+    return distances,prev
+def shortestpath(adjacency,start,end):
+    distances,prev=dijkstra(adjacency,start)
+    path=[]
+    current=end
+    while prev[current] is not None:
+        path.insert(0,current)
+        current=prev[current]
+    path.insert(0,start)
+    return path,distances[end]
+p=int(input())
+places={input().strip() for _ in range(p)}
+q=int(input())
+graph={place:{} for place in places}
+for _ in range(q):
+    start,end,dis=input().split()
+    dis=int(dis)
+    graph[start][end]=dis
+    graph[end][start]=dis
+r=int(input())
+ops=[input().split() for _ in range(r)]
+for start,end in ops:
+    if start==end:
+        print(start)
+        continue
+    path,max_dis=shortestpath(graph,start,end)
+    cout=''
+    for i in range(len(path)-1):
+        cout+=f'{path[i]}->({graph[path[i]][path[i+1]]})->'
+    cout+=f'{end}'
+    print(cout)
+```
+#### （2）kruskal算法(最小生成树权重和)
+```python
+X,R={},{}
+def disjointset(char):
+    X[char]=char
+    R[char]=0
+def find(x):
+    if X[x]!=x:
+        X[x]=find(X[x])
+    return X[x]
+def union(start,end):
+    r1=find(start)
+    r2=find(end)
+    if r1!=r2:
+        if R[r1]>R[r2]:
+            X[r2]=r1
+        else:
+            X[r1]=r2
+            if R[r1]==R[r2]:
+                R[r2]+=1
+def kruskal(dic):
+    edges=[]
+    for i in dic.keys():
+        disjointset(i)
+        for j in dic[i].keys():
+            if ord(i)<ord(j):
+                edges.append((dic[i][j],i,j))
+    edges=sorted(edges,key=lambda x:x[0])
+    ans=0
+    for edge in edges:
+        weight,start,end=edge
+        if find(start)!=find(end):
+            union(start,end)
+            ans+=weight
+    return ans
+```
+#### （3）prim算法（最小生成树权重和）
+```python
+import heapq
+
+def prim(graph, start):
+    mst = []
+    used = set([start])
+    edges = [
+        (cost, start, to)
+        for to, cost in graph[start].items()
+    ]
+    heapq.heapify(edges)
+
+    while edges:
+        cost, frm, to = heapq.heappop(edges)
+        if to not in used:
+            used.add(to)
+            mst.append((frm, to, cost))
+            for to_next, cost2 in graph[to].items():
+                if to_next not in used:
+                    heapq.heappush(edges, (cost2, to, to_next))
+
+    return mst
+
+def solve():
+    n = int(input())
+    graph = {chr(i+65): {} for i in range(n)}
+    for i in range(n-1):
+        data = input().split()
+        star = data[0]
+        m = int(data[1])
+        for j in range(m):
+            to_star = data[2+j*2]
+            cost = int(data[3+j*2])
+            graph[star][to_star] = cost
+            graph[to_star][star] = cost
+    mst = prim(graph, 'A')
+    print(sum(x[2] for x in mst))
+
+solve()
+```
