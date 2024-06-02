@@ -681,6 +681,44 @@ def zhbuildtree(mid,post):
     root.left=zhbuildtree(mid[:root_midorder],post[:root_midorder])
     return root
 ```
+##### [5] 括号嵌套树
+```python
+class Treenode:
+    def __init__(self,value):
+        self.value=value
+        self.children=[]
+def parse_tree(s):
+    stack=[]
+    node=None
+    for char in s:
+        if char.isalpha():
+            node=Treenode(char)
+            if stack:#栈如果非空，就将节点作为子节点加入栈顶结点的子节点列表中
+                stack[-1].children.append(node)
+        elif char=='(':
+            if node:
+                stack.append(node)
+                node=None
+        elif char==')':
+            if stack:
+                node=stack.pop()
+    return node #根节点
+def preorder(node):
+    output=[node.value]
+    for child in node.children:
+        output.extend(preorder(child))
+    return ''.join(output)
+def postorder(node):
+    output=[]
+    for child in node.children:
+        output.extend(postorder(child))
+    output.append(node.value)
+    return ''.join(output)
+s=input().strip()
+s=''.join(s.split())
+print(preorder(parse_tree(s)))
+print(postorder(parse_tree(s)))
+```
 #### (6)八皇后问题（n皇后问题）
 八皇后问题（可扩展为n皇后问题）            
 ```python
@@ -732,8 +770,63 @@ for i in range(int(input())):
     else:
         print(f'Data set {i+1}: no')
 ```
-
-
+#### (8)两座孤岛最短距离
+```python
+from collections import deque
+def dfs(x,y,grid,n,queue,directions):
+    grid[x][y]=2
+    queue.append((x,y))
+    for dx,dy in directions:
+        nx,ny=x+dx,y+dy
+        if 0<=nx<n and 0<=ny<n and grid[nx][ny]==1:
+            dfs(nx,ny,grid,n,queue,directions)
+def bfs(grid,n,queue,directions):
+    dis=0
+    while queue:
+        for _ in range(len(queue)):
+            x,y=queue.popleft()
+            for dx,dy in directions:
+                nx,ny=x+dx,y+dy
+                if 0<=nx<n and 0<=ny<n:
+                    if grid[nx][ny]==1:
+                        return dis
+                    elif grid[nx][ny]==0:
+                        grid[nx][ny]=2
+                        queue.append((nx,ny))
+        dis+=1
+    return dis
+n=int(input())
+grid=[list(map(int,input())) for _ in range(n)]
+directions=[(1,0),(-1,0),(0,1),(0,-1)]
+queue=deque()
+def find(grid):
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j]==1:
+                dfs(i,j,grid,n,queue,directions)
+                return bfs(grid,n,queue,directions)
+print(find(grid))
+```
+#### (9) 算鹰
+```python
+def dfs(x,y):
+    if x<0 or y<0 or x>9 or y>9 or board[x][y]!='.':
+        return
+    directions=[(0,1),(0,-1),(-1,0),(1,0)]
+    if board[x][y]=='.':
+        board[x][y]='-'
+        for direction in directions:
+            nx,ny=x+direction[0],y+direction[1]
+            dfs(nx,ny)
+board=[list(input()) for _ in range(10)]
+cnt=0
+for i in range(10):
+    for j in range(10):
+        if board[i][j]=='.':
+            dfs(i,j)
+            cnt+=1
+print(cnt)
+```
 
 ### 6.图（包含bfs）
 #### (1)词梯
