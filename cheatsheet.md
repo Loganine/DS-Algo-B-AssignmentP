@@ -719,6 +719,49 @@ s=''.join(s.split())
 print(preorder(parse_tree(s)))
 print(postorder(parse_tree(s)))
 ```
+##### [6] 二叉树的高度和叶子数目
+```python
+class TreeNode:
+    def __init__(self):
+        self.left = None
+        self.right = None
+
+def tree_height(node):
+    if node is None:
+        return -1  # 根据定义，空树高度为-1
+    return max(tree_height(node.left), tree_height(node.right)) + 1
+
+def count_leaves(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    return count_leaves(node.left) + count_leaves(node.right)
+
+n = int(input())  # 读取节点数量
+nodes = [TreeNode() for _ in range(n)]
+has_parent = [False] * n  # 用来标记节点是否有父节点
+
+for i in range(n):
+    left_index, right_index = map(int, input().split())
+    if left_index != -1:
+        nodes[i].left = nodes[left_index]
+        has_parent[left_index] = True
+    if right_index != -1:
+        #print(right_index)
+        nodes[i].right = nodes[right_index]
+        has_parent[right_index] = True
+
+# 寻找根节点，也就是没有父节点的节点
+root_index = has_parent.index(False)
+root = nodes[root_index]
+
+# 计算高度和叶子节点数
+height = tree_height(root)
+leaves = count_leaves(root)
+
+print(f"{height} {leaves}")
+```
 #### (6)八皇后问题（n皇后问题）
 八皇后问题（可扩展为n皇后问题）            
 ```python
@@ -1216,7 +1259,7 @@ def cal(s):
 s=input().split()
 print(f'{float(cal(s)):.6f}')
 ```
-### 8.图
+### 8.图 补充
 #### （1）Dijkstra算法（以兔子与樱花为例）
 ```python
 import heapq
@@ -1343,4 +1386,88 @@ def solve():
     print(sum(x[2] for x in mst))
 
 solve()
+```
+#### （4）Saving Tong Monk
+```python
+import heapq
+import sys
+
+input = sys.stdin.readline
+
+class Node:
+    def __init__(self, x, y, time, key, snake):
+        self.x = x
+        self.y = y
+        self.time = time
+        self.key = key
+        self.snake = snake # 用二进制位表示经过的蛇
+
+    def __lt__(self, other):
+        return self.time < other.time
+
+
+def bfs(maze, n, m):
+    x0, y0, count = 0, 0, 0
+    snakes = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if maze[i][j] == 'K':
+                x0, y0 = i, j
+            if maze[i][j] == 'S':
+                snakes[i][j] = count
+                count += 1
+
+    dirs = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+    inf = float('inf')
+    memo = [[[inf] * (m + 1) for _ in range(n)] for _ in range(n)]
+    queue = []
+    heapq.heappush(queue, Node(x0, y0, 0, 0, 0))
+    memo[x0][y0][0] = 0
+    while queue:
+        node = heapq.heappop(queue)
+        for dx, dy in dirs:
+            nx, ny = node.x + dx, node.y + dy
+            if 0 <= nx < n and 0 <= ny < n:
+                if maze[nx][ny] == '#':
+                    continue
+                elif maze[nx][ny] == 'S':
+                    if node.snake & (1 << snakes[nx][ny]):
+                        if node.time + 1 < memo[nx][ny][node.key]:
+                            memo[nx][ny][node.key] = node.time + 1
+                            heapq.heappush(queue, Node(nx, ny, node.time + 1, node.key, node.snake))
+                    else:
+                        if node.time + 2 < memo[nx][ny][node.key]:
+                            memo[nx][ny][node.key] = node.time + 2
+
+                            # snake：表示经过蛇的情况，这里使用位运算
+                            # 将当前位置的蛇加入到 node.snake 中，表示经过了当前位置的蛇。
+                            heapq.heappush(queue, Node(nx, ny, node.time + 2,
+                                                       node.key, node.snake | (1 << snakes[nx][ny])))
+                elif maze[nx][ny].isdigit():
+                    if int(maze[nx][ny]) == node.key + 1:
+                        if node.time + 1 < memo[nx][ny][node.key + 1]:
+                            memo[nx][ny][node.key + 1] = node.time + 1
+                            heapq.heappush(queue, Node(nx, ny, node.time + 1, node.key + 1, node.snake))
+                    else:
+                        if node.time + 1 < memo[nx][ny][node.key]:
+                            memo[nx][ny][node.key] = node.time + 1
+                            heapq.heappush(queue, Node(nx, ny, node.time + 1, node.key, node.snake))
+                elif maze[nx][ny] == 'T' and node.key == m:
+                    return node.time + 1
+                else:
+                    if node.time + 1 < memo[nx][ny][node.key]:
+                        memo[nx][ny][node.key] = node.time + 1
+                        heapq.heappush(queue, Node(nx, ny, node.time + 1, node.key, node.snake))
+    return 'impossible'
+
+
+result = []
+while True:
+    n, m = map(int, input().split())
+    if n == m == 0:
+        break
+    maze = [list(input()) for _ in range(n)]
+    result.append(bfs(maze, n, m))
+for tmp in result:
+    print(tmp)
 ```
