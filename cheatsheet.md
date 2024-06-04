@@ -1471,3 +1471,71 @@ while True:
 for tmp in result:
     print(tmp)
 ```
+#### （5）无向图是否连通或成环
+```python
+def has_connection(n,edges):
+    visited = [False] * n  
+    stack = [0]  
+    visited[0] = True
+    while stack:
+        node = stack.pop()
+        for neighbor in edges[node]:
+            if not visited[neighbor]:
+                stack.append(neighbor)
+                visited[neighbor] = True
+    if all(visited):
+        return 'connected:yes'
+    else:
+        return 'connected:no'
+def has_cycle(n,edges):
+    visited=[False]*n
+    def dfs(node,visited,parent):
+        visited[node]=True
+        for nbr in edges[node]:
+            if not visited[nbr]:
+                if dfs(nbr,visited,node):
+                    return True
+            elif parent!=nbr:
+                return True
+    for node in range(n):
+        if not visited[node]:
+            if dfs(node,visited,-1):
+                return True
+    return False
+n,m=map(int,input().split())
+edges={i:[] for i in range(n)}
+for _ in range(m):
+    a,b=map(int,input().split())
+    edges[a].append(b)
+    edges[b].append(a)
+print(has_connection(n,edges))
+print('loop:yes' if has_cycle(n,edges) else 'loop:no')
+```
+#### （6）有向图是否有环(拓扑排序)
+```python
+from collections import deque,defaultdict
+def topo_sort(graph):
+    in_degree={u:0 for u in range(1,n+1)}
+    for u in graph:
+        for v in graph[u]:
+            in_degree[v]+=1
+    q=deque([u for u in in_degree if in_degree[u]==0])
+    topo_order=[]
+    while q:
+        u=q.popleft()
+        topo_order.append(u)
+        for v in graph[u]:
+            in_degree[v]-=1
+            if in_degree[v]==0:
+                q.append(v)
+    if len(topo_order)!=len(graph):
+        return 'Yes'
+    return 'No'
+for _ in range(int(input())):
+    n,m=map(int,input().split())
+    graph=defaultdict(list)
+    for _ in range(m):
+        u,v=map(int,input().split())
+        graph[u].append(v)
+    print(topo_sort(graph))
+```
